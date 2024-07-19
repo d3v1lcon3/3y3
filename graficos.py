@@ -18,12 +18,24 @@ def update_logs(i, cpu_line, ram_line, disk_line):
         df = pd.read_csv(log_filename)
         if not df.empty:
             # Atualiza as linhas dos gráficos com os novos dados
-            cpu_line.set_data(df.index, df['CPU'])
-            ram_line.set_data(df.index, df['RAM'])
-            disk_line.set_data(df.index, df['Disk'])
+            cpu_line.set_xdata(df.index)
+            cpu_line.set_ydata(df['CPU'])
+            ram_line.set_xdata(df.index)
+            ram_line.set_ydata(df['RAM'])
+            disk_line.set_xdata(df.index)
+            disk_line.set_ydata(df['Disk'])
+            
             # Ajusta os limites do gráfico para os novos dados
             ax.relim()
             ax.autoscale_view()
+        else:
+            # Se o DataFrame estiver vazio, garante que o gráfico não mostre dados antigos
+            cpu_line.set_xdata([])
+            cpu_line.set_ydata([])
+            ram_line.set_xdata([])
+            ram_line.set_ydata([])
+            disk_line.set_xdata([])
+            disk_line.set_ydata([])
 
 # Configurar o gráfico
 fig, ax = plt.subplots()
@@ -31,6 +43,7 @@ cpu_line, = ax.plot([], [], label='CPU')
 ram_line, = ax.plot([], [], label='RAM')
 disk_line, = ax.plot([], [], label='Disk')
 
+# Definir os limites iniciais e rótulos
 ax.set_xlim(0, 100)  # Limite inicial, será ajustado dinamicamente
 ax.set_ylim(0, 100)
 ax.set_xlabel('Tempo')
