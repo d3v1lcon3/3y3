@@ -17,9 +17,11 @@ def update_logs(i, cpu_line, ram_line, disk_line):
     if os.path.isfile(log_filename):
         df = pd.read_csv(log_filename)
         if not df.empty:
+            # Atualiza as linhas dos gráficos com os novos dados
             cpu_line.set_data(df.index, df['CPU'])
             ram_line.set_data(df.index, df['RAM'])
             disk_line.set_data(df.index, df['Disk'])
+            # Ajusta os limites do gráfico para os novos dados
             ax.relim()
             ax.autoscale_view()
 
@@ -29,7 +31,7 @@ cpu_line, = ax.plot([], [], label='CPU')
 ram_line, = ax.plot([], [], label='RAM')
 disk_line, = ax.plot([], [], label='Disk')
 
-ax.set_xlim(0, 100)  # Este limite será ajustado dinamicamente
+ax.set_xlim(0, 100)  # Limite inicial, será ajustado dinamicamente
 ax.set_ylim(0, 100)
 ax.set_xlabel('Tempo')
 ax.set_ylabel('Uso (%)')
