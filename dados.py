@@ -4,6 +4,7 @@ import psutil
 import time
 import relatorio
 
+
 def list_processes():
     processes = []
 
@@ -30,22 +31,28 @@ if __name__ == "__main__":
     # Abrir os arquivos CSV
     relatorio.open_tables()
 
-    while True:
-        # Obter uso do sistema
-        cpu, ram, disk = get_system_usage()
-        
-        # Registrar uso do sistema no CSV
-        relatorio.write_performance(cpu, ram, disk)
-        
-        # Obter e registrar lista de processos no CSV
-        process_list = list_processes()
-        relatorio.write_processes(process_list)
+    try:
+        while True:
+            # Obter uso do sistema
+            cpu, ram, disk = get_system_usage()
+            
+            # Registrar uso do sistema no CSV
+            relatorio.write_performance(cpu, ram, disk)
+            
+            # Obter e registrar lista de processos no CSV
+            process_list = list_processes()
+            relatorio.write_processes(process_list)
 
-        # Print para visualização (opcional)
-        print(f"Uso da CPU: {cpu}%")
-        print(f"Uso da RAM: {ram}%")
-        print(f"Uso do Disco: {disk}%")
-        for process in process_list:
-            print(f"PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}, Memoria: {process['memory_percent']}%")
-        
-        time.sleep(5)
+            # Print para visualização (opcional)
+            print(f"Uso da CPU: {cpu}%")
+            print(f"Uso da RAM: {ram}%")
+            print(f"Uso do Disco: {disk}%")
+            for process in process_list:
+                print(f"PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}, Memoria: {process['memory_percent']}%")
+            
+            time.sleep(5)
+    except KeyboardInterrupt:
+        print("Encerrando o monitoramento.")
+    finally:
+        # Fechar os arquivos CSV
+        relatorio.close_tables()
