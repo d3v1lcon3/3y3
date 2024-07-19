@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/fud3/Documents/git/3y3/./dados.py", line 38, in <module>
+    relatorio.write_performance(cpu, ram, disk)
+  File "/home/fud3/Documents/git/3y3/relatorio.py", line 38, in write_performance
+    writer_performance.writerow({'CPU': cpu, 'RAM': ram, 'Disk': disk})
+  File "/usr/lib/python3.11/csv.py", line 154, in writerow
+    return self.writer.writerow(self._dict_to_list(rowdict))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: I/O operation on closed file.
