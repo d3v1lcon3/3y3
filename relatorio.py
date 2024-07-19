@@ -43,7 +43,13 @@ def write_performance(cpu, ram, disk):
 def write_processes(procs):
     if writer_processes:
         for proc in procs:
-            writer_processes.writerow(proc)
+            writer_processes.writerow({
+                'PID': proc['pid'],
+                'Nome': proc['name'],
+                'Usuario': proc['username'],
+                'CPU': proc['cpu_percent'],
+                'Memoria': proc['memory_percent']
+            })
 
 # Fechar os arquivos
 def close_tables():
