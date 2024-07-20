@@ -1,56 +1,58 @@
 #!/usr/bin/env python3
 
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-import os
-from datetime import datetime
+import psutil
+import time
+import relatorio
 
-# Função para obter o nome do arquivo de log de performance atual
-def get_performance_log_filename():
-    data = datetime.now().strftime('%d-%m-%Y')
-    return f'performance_{data}.csv'
 
-# Função para ler os logs de performance e atualizar os gráficos
-def update_logs(i, cpu_line, ram_line, disk_line):
-    log_filename = get_performance_log_filename()
-    if os.path.isfile(log_filename):
-        df = pd.read_csv(log_filename)
-        if not df.empty:
-            # Atualiza as linhas dos gráficos com os novos dados
-            cpu_line.set_xdata(df.index)
-            cpu_line.set_ydata(df['CPU'])
-            ram_line.set_xdata(df.index)
-            ram_line.set_ydata(df['RAM'])
-            disk_line.set_xdata(df.index)
-            disk_line.set_ydata(df['Disk'])
+def list_processes():
+    processes = []
+
+    for proc in psutil.process_iter(['pid', 'name', 'username', 'cpu_percent', 'memory_percent']):
+        try:
+            process_info = proc.info
+            processes.append(process_info)
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return processes
+
+def get_system_usage():
+    cpu_usage = psutil.cpu_percent(interval=1)
+
+    memory_info = psutil.virtual_memory()
+    ram_usage = memory_info.percent
+
+    disk_usage = psutil.disk_usage('/')
+    disk_percent = disk_usage.percent
+
+    return cpu_usage, ram_usage, disk_percent
+
+if __name__ == "__main__":
+    # Abrir os arquivos CSV
+    relatorio.open_tables()
+
+    try:
+        while True:
+            # Obter uso do sistema
+            cpu, ram, disk = get_system_usage()
             
-            # Ajusta os limites do gráfico para os novos dados
-            ax.relim()
-            ax.autoscale_view()
-        else:
-            # Se o DataFrame estiver vazio, garante que o gráfico não mostre dados antigos
-            cpu_line.set_xdata([])
-            cpu_line.set_ydata([])
-            ram_line.set_xdata([])
-            ram_line.set_ydata([])
-            disk_line.set_xdata([])
-            disk_line.set_ydata([])
+            # Registrar uso do sistema no CSV
+            relatorio.write_performance(cpu, ram, disk)
+            
+            # Obter e registrar lista de processos no CSV
+            process_list = list_processes()
+            relatorio.write_processes(process_list)
 
-# Configurar o gráfico
-fig, ax = plt.subplots()
-cpu_line, = ax.plot([], [], label='CPU')
-ram_line, = ax.plot([], [], label='RAM')
-disk_line, = ax.plot([], [], label='Disk')
-
-# Definir os limites iniciais e rótulos
-ax.set_xlim(0, 100)  # Limite inicial, será ajustado dinamicamente
-ax.set_ylim(0, 100)
-ax.set_xlabel('Tempo')
-ax.set_ylabel('Uso (%)')
-ax.legend()
-
-# Função de animação para atualizar o gráfico
-ani = FuncAnimation(fig, update_logs, fargs=(cpu_line, ram_line, disk_line), interval=1000)
-
-plt.show()
+            # Print para visualização (opcional)
+            print(f"Uso da CPU: {cpu}%")
+            print(f"Uso da RAM: {ram}%")
+            print(f"Uso do Disco: {disk}%")
+            for process in process_list:
+                print(f"PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}, Memoria: {process['memory_percent']}%")
+            
+            time.sleep(5)
+    except KeyboardInterrupt:
+        print("Encerrando o monitoramento.")
+    finally:
+        # Fechar os arquivos CSV
+        relatorio.close_tables()
