@@ -4,10 +4,8 @@ import psutil
 import time
 import relatorio
 
-
 def list_processes():
     processes = []
-
     for proc in psutil.process_iter(['pid', 'name', 'username', 'cpu_percent', 'memory_percent']):
         try:
             process_info = proc.info
@@ -18,13 +16,10 @@ def list_processes():
 
 def get_system_usage():
     cpu_usage = psutil.cpu_percent(interval=1)
-
     memory_info = psutil.virtual_memory()
     ram_usage = memory_info.percent
-
     disk_usage = psutil.disk_usage('/')
     disk_percent = disk_usage.percent
-
     return cpu_usage, ram_usage, disk_percent
 
 if __name__ == "__main__":
@@ -38,10 +33,14 @@ if __name__ == "__main__":
             
             # Registrar uso do sistema no CSV
             relatorio.write_performance(cpu, ram, disk)
+            # Forçar gravação no disco
+            relatorio.performance_file.flush()
             
             # Obter e registrar lista de processos no CSV
             process_list = list_processes()
             relatorio.write_processes(process_list)
+            # Forçar gravação no disco
+            relatorio.processes_file.flush()
 
             # Print para visualização (opcional)
             print(f"Uso da CPU: {cpu}%")
