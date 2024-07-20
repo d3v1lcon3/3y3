@@ -34,13 +34,13 @@ if __name__ == "__main__":
             # Registrar uso do sistema no CSV
             relatorio.write_performance(cpu, ram, disk)
             # Forçar gravação no disco
-            relatorio.performance_file.flush()
+            relatorio.file_performance.flush()
             
             # Obter e registrar lista de processos no CSV
             process_list = list_processes()
             relatorio.write_processes(process_list)
             # Forçar gravação no disco
-            relatorio.processes_file.flush()
+            relatorio.file_processes.flush()
 
             # Print para visualização (opcional)
             print(f"Uso da CPU: {cpu}%")
