@@ -16,7 +16,9 @@ def update_logs(i, cpu_line, ram_line, disk_line):
     log_filename = get_performance_log_filename()
     if os.path.isfile(log_filename):
         df = pd.read_csv(log_filename)
+        print(f"Lendo arquivo {log_filename}")
         if not df.empty:
+            print("Atualizando gráfico com novos dados")
             # Atualiza as linhas dos gráficos com os novos dados
             cpu_line.set_xdata(df.index)
             cpu_line.set_ydata(df['CPU'])
@@ -29,6 +31,7 @@ def update_logs(i, cpu_line, ram_line, disk_line):
             ax.relim()
             ax.autoscale_view()
         else:
+            print("DataFrame vazio")
             # Se o DataFrame estiver vazio, garante que o gráfico não mostre dados antigos
             cpu_line.set_xdata([])
             cpu_line.set_ydata([])
@@ -36,6 +39,8 @@ def update_logs(i, cpu_line, ram_line, disk_line):
             ram_line.set_ydata([])
             disk_line.set_xdata([])
             disk_line.set_ydata([])
+    else:
+        print(f"Arquivo {log_filename} não encontrado")
 
 # Configurar o gráfico
 fig, ax = plt.subplots()
