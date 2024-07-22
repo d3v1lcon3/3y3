@@ -37,5 +37,5 @@ def gerar_grafico_pid(pid):
     plt.show()
 
 # Chama a função para gerar o gráfico para o PID desejado
-pid_desejado = 1234  # Substitua pelo PID que você deseja visualizar
+input(pid_desejado)
 gerar_grafico_pid(pid_desejado)
