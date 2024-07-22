@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 # Função para obter o nome do arquivo de log de performance atual
 def get_log_filename():
@@ -37,5 +39,5 @@ def gerar_grafico_pid(pid):
     plt.show()
 
 # Chama a função para gerar o gráfico para o PID desejado
-input(pid_desejado)
+pid_desejado = int(input('PID'))
 gerar_grafico_pid(pid_desejado)
