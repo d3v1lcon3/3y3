@@ -1,13 +1,15 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Carrega o arquivo CSV
-file_path = 'caminho/para/seu_arquivo.csv'
-df = pd.read_csv(file_path)
+# Função para obter o nome do arquivo de log de performance atual
+def get_log_filename():
+    data = datetime.now().strftime('%d-%m-%Y')
+    return f'processes_{data}.csv'
 
 # Função para gerar o gráfico para um PID específico
 def gerar_grafico_pid(pid):
     # Filtra os dados para o PID específico
+    df = get_log_filename()
     df_pid = df[df['PID'] == pid]
     
     # Converte a coluna 'Hora' para datetime para facilitar a ordenação e plotagem
