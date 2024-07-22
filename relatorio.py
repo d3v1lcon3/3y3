@@ -5,8 +5,9 @@ from datetime import datetime
 # Abertura dos arquivos (exemplo)
 def open_tables():
     global file_performance, file_processes
-    file_performance = open('performance.csv', mode='a', newline='')
-    file_processes = open('processes.csv', mode='a', newline='')
+    data = datetime.now().strftime('%d-%m-%Y')
+    file_performance = open('performance_{data}.csv', mode='a', newline='')
+    file_processes = open('processes_{data}.csv', mode='a', newline='')
     
     # Escrita do cabeçalho se o arquivo estiver vazio
     if file_performance.tell() == 0:
