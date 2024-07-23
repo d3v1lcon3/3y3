@@ -34,7 +34,7 @@ def gerar_grafico_pid(pid):
             plt.figure(figsize=(10, 6))
             
             # Plot CPU usage
-            plt.plot(df_pid['Hora'], df_pid['cpu_percent'], label='CPU (%)', color='blue')
+            plt.plot(df_pid['Hora'], df_pid['CPU (%)'], label='CPU (%)', color='blue')
             
             # Plot RAM usage
             plt.plot(df_pid['Hora'], df_pid['ram_percent'], label='RAM (MB)', color='green')
