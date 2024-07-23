@@ -1,4 +1,4 @@
-[200~Digite o PID desejado: 2540
+Digite o PID desejado: 2540
 /home/fud3/Documents/git/3y3/./pid_grafico.py:28: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
@@ -29,4 +29,3 @@ Traceback (most recent call last):
   File /usr/lib/python3/dist-packages/pandas/core/indexes/base.py, line 3804, in get_loc
     raise KeyError(key) from err
 KeyError: 'cpu'
-~
