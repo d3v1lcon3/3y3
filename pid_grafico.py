@@ -20,7 +20,7 @@ def gerar_grafico_pid(pid):
         df = pd.read_csv(log_filename)
         
         # Filtra os dados para o PID específico
-        df_pid = df[df['PID'] == pid]
+        df_pid = df[df['PID'] == pid].copy()
         
         # Verifica se há dados para o PID especificado
         if not df_pid.empty:
