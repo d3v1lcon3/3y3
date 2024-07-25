@@ -41,8 +41,7 @@ app.layout = html.Div([
         placeholder='Selecione um processo'
     ),
     
-    dcc.Graph(id='cpu-graph'),
-    dcc.Graph(id='ram-graph')
+    dcc.Graph(id='process-graph')
 ])
 
 # Callback para atualizar o dropdown de processos
@@ -72,32 +71,28 @@ def update_system_performance(n):
 
     return system_fig
 
-# Callback para atualizar os gráficos de CPU e RAM com base no processo selecionado
+# Callback para atualizar o gráfico dos processos selecionados
 @app.callback(
-    [Output('cpu-graph', 'figure'),
-     Output('ram-graph', 'figure')],
+    Output('process-graph', 'figure'),
     [Input('process-dropdown', 'value'),
      Input('interval-component', 'n_intervals')]
 )
-def update_graphs(selected_process, n):
+def update_process_graph(selected_process, n):
     if selected_process is None:
-        return {}, {}
+        return {}
 
     processes_df = load_data(get_log_filename('processes'))
     df_process = processes_df[processes_df['Nome'] == selected_process].sort_values(by='Hora')
     
-    cpu_fig = go.Figure()
-    cpu_fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['CPU (%)'], mode='lines', name='CPU (%)'))
-    cpu_fig.update_layout(title=f'Utilização de CPU para o processo {selected_process}', xaxis_title='Hora', yaxis_title='CPU (%)')
-
-    ram_fig = go.Figure()
-    ram_fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Memoria (%)'], mode='lines', name='RAM (MB)'))
-    ram_fig.update_layout(title=f'Utilização de RAM para o processo {selected_process}', xaxis_title='Hora', yaxis_title='RAM (MB)')
+    process_fig = go.Figure()
     
-    return cpu_fig, ram_fig
+    process_fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['CPU (%)'], mode='lines', name='CPU (%)', line=dict(color='blue')))
+    process_fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Memoria (%)'], mode='lines', name='Memória (%)', line=dict(color='green')))
+    
+    process_fig.update_layout(title=f'Utilização de CPU e Memória para o processo {selected_process}', xaxis_title='Hora', yaxis_title='Utilização (%)')
+    
+    return process_fig
 
 # Executa o servidor
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
