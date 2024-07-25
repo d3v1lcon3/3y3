@@ -20,10 +20,6 @@ def load_data(filename):
     else:
         return pd.DataFrame()
 
-# Carrega os dados de desempenho do sistema e processos
-performance_df = load_data(get_log_filename('performance'))
-processes_df = load_data(get_log_filename('processes'))
-
 # Inicializa o app Dash
 app = Dash(__name__)
 
@@ -31,24 +27,41 @@ app = Dash(__name__)
 app.layout = html.Div([
     html.H1("Dashboard de Performance de Processos"),
     
+    dcc.Interval(
+        id='interval-component',
+        interval=5*1000,  # Atualiza a cada 5 segundos
+        n_intervals=0
+    ),
+    
     dcc.Graph(id='system-performance-graph'),
     
     dcc.Dropdown(
-        id='pid-dropdown',
-        options=[{'label': str(pid), 'value': pid} for pid in processes_df['PID'].unique()],
-        placeholder='Selecione um PID'
+        id='process-dropdown',
+        options=[],
+        placeholder='Selecione um processo'
     ),
     
     dcc.Graph(id='cpu-graph'),
     dcc.Graph(id='ram-graph')
 ])
 
+# Callback para atualizar o dropdown de processos
+@app.callback(
+    Output('process-dropdown', 'options'),
+    [Input('interval-component', 'n_intervals')]
+)
+def update_dropdown_options(n):
+    processes_df = load_data(get_log_filename('processes'))
+    return [{'label': name, 'value': name} for name in processes_df['Nome'].unique()]
+
 # Callback para atualizar o gráfico de performance do sistema
 @app.callback(
     Output('system-performance-graph', 'figure'),
-    [Input('pid-dropdown', 'value')]
+    [Input('interval-component', 'n_intervals')]
 )
-def update_system_performance(_):
+def update_system_performance(n):
+    performance_df = load_data(get_log_filename('performance'))
+    
     system_fig = go.Figure()
     
     system_fig.add_trace(go.Scatter(x=performance_df['Hora'], y=performance_df['CPU'], mode='lines', name='CPU (%)', line=dict(color='blue')))
@@ -59,29 +72,32 @@ def update_system_performance(_):
 
     return system_fig
 
-# Callback para atualizar os gráficos com base no PID selecionado
+# Callback para atualizar os gráficos de CPU e RAM com base no processo selecionado
 @app.callback(
     [Output('cpu-graph', 'figure'),
      Output('ram-graph', 'figure')],
-    [Input('pid-dropdown', 'value')]
+    [Input('process-dropdown', 'value'),
+     Input('interval-component', 'n_intervals')]
 )
-def update_graphs(selected_pid):
-    if selected_pid is None:
+def update_graphs(selected_process, n):
+    if selected_process is None:
         return {}, {}
 
-    df_pid = processes_df[processes_df['PID'] == selected_pid].sort_values(by='Hora')
+    processes_df = load_data(get_log_filename('processes'))
+    df_process = processes_df[processes_df['Nome'] == selected_process].sort_values(by='Hora')
     
     cpu_fig = go.Figure()
-    cpu_fig.add_trace(go.Scatter(x=df_pid['Hora'], y=df_pid['CPU (%)'], mode='lines', name='CPU (%)'))
-    cpu_fig.update_layout(title=f'Utilização de CPU para PID {selected_pid}', xaxis_title='Hora', yaxis_title='CPU (%)')
+    cpu_fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['CPU (%)'], mode='lines', name='CPU (%)'))
+    cpu_fig.update_layout(title=f'Utilização de CPU para o processo {selected_process}', xaxis_title='Hora', yaxis_title='CPU (%)')
 
     ram_fig = go.Figure()
-    ram_fig.add_trace(go.Scatter(x=df_pid['Hora'], y=df_pid['Memoria (%)'], mode='lines', name='RAM (MB)'))
-    ram_fig.update_layout(title=f'Utilização de RAM para PID {selected_pid}', xaxis_title='Hora', yaxis_title='RAM (MB)')
+    ram_fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Memoria (%)'], mode='lines', name='RAM (MB)'))
+    ram_fig.update_layout(title=f'Utilização de RAM para o processo {selected_process}', xaxis_title='Hora', yaxis_title='RAM (MB)')
     
     return cpu_fig, ram_fig
 
 # Executa o servidor
 if __name__ == '__main__':
     app.run_server(debug=True)
+
 
