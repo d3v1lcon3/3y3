@@ -31,11 +31,7 @@ app = Dash(__name__)
 app.layout = html.Div([
     html.H1("Dashboard de Performance de Processos"),
     
-    html.Div([
-        dcc.Graph(id='system-cpu-graph'),
-        dcc.Graph(id='system-ram-graph'),
-        dcc.Graph(id='system-disk-graph')
-    ]),
+    dcc.Graph(id='system-performance-graph'),
     
     dcc.Dropdown(
         id='pid-dropdown',
@@ -47,27 +43,21 @@ app.layout = html.Div([
     dcc.Graph(id='ram-graph')
 ])
 
-# Callback para atualizar os gráficos de performance do sistema
+# Callback para atualizar o gráfico de performance do sistema
 @app.callback(
-    [Output('system-cpu-graph', 'figure'),
-     Output('system-ram-graph', 'figure'),
-     Output('system-disk-graph', 'figure')],
+    Output('system-performance-graph', 'figure'),
     [Input('pid-dropdown', 'value')]
 )
 def update_system_performance(_):
-    cpu_fig = go.Figure()
-    cpu_fig.add_trace(go.Scatter(x=performance_df['Hora'], y=performance_df['CPU'], mode='lines', name='CPU (%)'))
-    cpu_fig.update_layout(title='Uso de CPU Total', xaxis_title='Hora', yaxis_title='CPU (%)')
+    system_fig = go.Figure()
+    
+    system_fig.add_trace(go.Scatter(x=performance_df['Hora'], y=performance_df['CPU'], mode='lines', name='CPU (%)', line=dict(color='blue')))
+    system_fig.add_trace(go.Scatter(x=performance_df['Hora'], y=performance_df['RAM'], mode='lines', name='RAM (%)', line=dict(color='green')))
+    system_fig.add_trace(go.Scatter(x=performance_df['Hora'], y=performance_df['Disk'], mode='lines', name='Disk (%)', line=dict(color='red')))
+    
+    system_fig.update_layout(title='Uso de CPU, RAM e Disco Total', xaxis_title='Hora', yaxis_title='Utilização (%)')
 
-    ram_fig = go.Figure()
-    ram_fig.add_trace(go.Scatter(x=performance_df['Hora'], y=performance_df['RAM'], mode='lines', name='RAM (%)'))
-    ram_fig.update_layout(title='Uso de RAM Total', xaxis_title='Hora', yaxis_title='RAM (%)')
-
-    disk_fig = go.Figure()
-    disk_fig.add_trace(go.Scatter(x=performance_df['Hora'], y=performance_df['Disk'], mode='lines', name='Disk (%)'))
-    disk_fig.update_layout(title='Uso de Disco Total', xaxis_title='Hora', yaxis_title='Disk (%)')
-
-    return cpu_fig, ram_fig, disk_fig
+    return system_fig
 
 # Callback para atualizar os gráficos com base no PID selecionado
 @app.callback(
@@ -94,3 +84,4 @@ def update_graphs(selected_pid):
 # Executa o servidor
 if __name__ == '__main__':
     app.run_server(debug=True)
+
