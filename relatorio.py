@@ -16,7 +16,7 @@ def open_tables():
     
     if file_processes.tell() == 0:
         processes_writer = csv.writer(file_processes)
-        processes_writer.writerow(['Hora', 'PID', 'Nome', 'Usuario', 'CPU (%)', 'Memoria (%)', 'Disco Lido (bytes)', 'Disco Escrito (bytes)', 'Rede Enviada (bytes)', 'Rede Recebida (bytes)'])
+        processes_writer.writerow(['Hora', 'PID', 'Nome', 'Usuario', 'CPU (%)', 'Memoria (%)', 'Disco Lido (bytes)', 'Disco Escrito (bytes)'])
 
 # Função para registrar o uso do sistema no CSV com a hora atual
 def write_performance(current_time, cpu, ram, disk, net_sent, net_recv):
@@ -27,7 +27,7 @@ def write_performance(current_time, cpu, ram, disk, net_sent, net_recv):
 def write_processes(process_list):
     processes_writer = csv.writer(file_processes)
     for process in process_list:
-        processes_writer.writerow([process['Hora'], process['pid'], process['name'], process['username'], process['cpu_percent'], process['memory_percent'], process['disk_read_bytes'], process['disk_write_bytes'], process['net_bytes_sent'], process['net_bytes_recv']])
+        processes_writer.writerow([process['Hora'], process['pid'], process['name'], process['username'], process['cpu_percent'], process['memory_percent'], process['disk_read_bytes'], process['disk_write_bytes']])
 
 # Fechar os arquivos CSV (exemplo)
 def close_tables():
