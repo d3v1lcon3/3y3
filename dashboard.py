@@ -24,7 +24,7 @@ def read_process_data():
     if os.path.exists(process_file):
         return pd.read_csv(process_file)
     else:
-        return pd.DataFrame(columns=['Hora', 'PID', 'Nome', 'Usuario', 'CPU (%)', 'Memoria (%)', 'Disco Lido (bytes)', 'Disco Escrito (bytes)', 'Rede Enviada (bytes)', 'Rede Recebida (bytes)'])
+        return pd.DataFrame(columns=['Hora', 'PID', 'Nome', 'Usuario', 'CPU (%)', 'Memoria (%)', 'Disco Lido (bytes)', 'Disco Escrito (bytes)'])
 
 # Inicializando o app Dash
 app = dash.Dash(__name__)
@@ -76,4 +76,9 @@ def update_process_dropdown(n_intervals):
     return [{'label': name, 'value': name} for name in process_names]
 
 @app.callback(
+    Output('process-graph', 'figure'),
+    [Input('process-name-dropdown', 'value'),
+     Input('interval-component', 'n_intervals')]
+)
+def update_process_graph(selected_name, n_intervals):
    
