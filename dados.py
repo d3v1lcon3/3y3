@@ -10,11 +10,14 @@ def list_processes():
     for proc in psutil.process_iter(['pid', 'name', 'username', 'cpu_percent', 'memory_percent']):
         try:
             process_info = proc.info
-            # Adiciona a coleta de uso de disco dos processos
-            with proc.oneshot():
-                io_counters = proc.io_counters()
-                process_info['disk_read_bytes'] = io_counters.read_bytes
-                process_info['disk_write_bytes'] = io_counters.write_bytes
+            process = psutil.Process(process_info['pid'])
+            process_info['cmdline'] = ' '.join(process.cmdline())
+            process_info['exe'] = process.exe()
+            process_info['cwd'] = process.cwd()
+            process_info['threads'] = [thread.id for thread in process.threads()]
+            process_info['connections'] = [conn._asdict() for conn in process.connections()]
+            process_info['open_files'] = [file.path for file in process.open_files()]
+            # Adicione outros dados que você deseja coletar
             processes.append(process_info)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
@@ -26,6 +29,7 @@ def get_system_usage():
     ram_usage = memory_info.percent
     disk_usage = psutil.disk_usage('/')
     disk_percent = disk_usage.percent
+    # Adicionando dados de rede
     net_io = psutil.net_io_counters()
     net_sent = net_io.bytes_sent
     net_recv = net_io.bytes_recv
@@ -64,7 +68,7 @@ if __name__ == "__main__":
             print(f"Rede Enviada: {net_sent} bytes")
             print(f"Rede Recebida: {net_recv} bytes")
             for process in process_list:
-                print(f"Hora: {process['Hora']}, PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}%, Memoria: {process['memory_percent']}%, Disco Lido: {process['disk_read_bytes']} bytes, Disco Escrito: {process['disk_write_bytes']} bytes")
+                print(f"Hora: {process['Hora']}, PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}%, Memoria: {process['memory_percent']}%, Cmdline: {process['cmdline']}, Executável: {process['exe']}, CWD: {process['cwd']}, Threads: {process['threads']}, Conexões: {process['connections']}, Arquivos Abertos: {process['open_files']}")
             
             time.sleep(5)
     except KeyboardInterrupt:
