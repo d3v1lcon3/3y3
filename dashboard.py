@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
@@ -81,4 +82,29 @@ def update_process_dropdown(n_intervals):
      Input('interval-component', 'n_intervals')]
 )
 def update_process_graph(selected_name, n_intervals):
-   
+    df_process = read_process_data()
+
+    if selected_name is None or df_process.empty:
+        return go.Figure()
+
+    df_process = df_process[df_process['Nome'] == selected_name]
+
+    if df_process.empty:
+        return go.Figure()
+
+    df_process['Hora'] = pd.to_datetime(df_process['Hora'])
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['CPU (%)'], mode='lines', name='CPU (%)'))
+    fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Memoria (%)'], mode='lines', name='Memoria (%)'))
+    fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Disco Lido (bytes)'], mode='lines', name='Disco Lido (bytes)'))
+    fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Disco Escrito (bytes)'], mode='lines', name='Disco Escrito (bytes)'))
+    fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Rede Enviada (bytes)'], mode='lines', name='Rede Enviada (bytes)'))
+    fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Rede Recebida (bytes)'], mode='lines', name='Rede Recebida (bytes)'))
+
+    fig.update_layout(title=f'Dados do Processo: {selected_name}', xaxis_title='Hora', yaxis_title='Uso')
+
+    return fig
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
