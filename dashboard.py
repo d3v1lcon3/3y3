@@ -53,7 +53,12 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     html.H1("Dashboard de Monitoramento de Desempenho"),
 
-    dcc.Graph(id='performance-graph'),
+    html.Div([
+        dcc.Graph(id='performance-cpu-ram'),
+        dcc.Graph(id='performance-disk'),
+        dcc.Graph(id='performance-network')
+    ]),
+
     dcc.Interval(id='interval-component', interval=5*1000, n_intervals=0),
 
     html.Div([
@@ -61,16 +66,20 @@ app.layout = html.Div([
         dcc.Dropdown(id='process-name-dropdown')
     ]),
 
-    dcc.Graph(id='process-graph'),
+    html.Div([
+        dcc.Graph(id='process-cpu-ram'),
+        dcc.Graph(id='process-disk'),
+        dcc.Graph(id='process-network')
+    ]),
 
     html.Div(id='process-details', style={'white-space': 'pre-line'})
 ])
 
 @app.callback(
-    Output('performance-graph', 'figure'),
+    Output('performance-cpu-ram', 'figure'),
     Input('interval-component', 'n_intervals')
 )
-def update_performance_graph(n_intervals):
+def update_performance_cpu_ram(n_intervals):
     df_performance = read_performance_data()
 
     if df_performance.empty:
@@ -81,11 +90,47 @@ def update_performance_graph(n_intervals):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df_performance['Hora'], y=df_performance['CPU'], mode='lines', name='CPU (%)'))
     fig.add_trace(go.Scatter(x=df_performance['Hora'], y=df_performance['RAM'], mode='lines', name='RAM (%)'))
+
+    fig.update_layout(title='CPU e RAM do Sistema', xaxis_title='Hora', yaxis_title='Uso (%)')
+
+    return fig
+
+@app.callback(
+    Output('performance-disk', 'figure'),
+    Input('interval-component', 'n_intervals')
+)
+def update_performance_disk(n_intervals):
+    df_performance = read_performance_data()
+
+    if df_performance.empty:
+        return go.Figure()
+
+    df_performance['Hora'] = pd.to_datetime(df_performance['Hora'])
+
+    fig = go.Figure()
     fig.add_trace(go.Scatter(x=df_performance['Hora'], y=df_performance['Disk'], mode='lines', name='Disco (%)'))
+
+    fig.update_layout(title='Uso do Disco', xaxis_title='Hora', yaxis_title='Uso (%)')
+
+    return fig
+
+@app.callback(
+    Output('performance-network', 'figure'),
+    Input('interval-component', 'n_intervals')
+)
+def update_performance_network(n_intervals):
+    df_performance = read_performance_data()
+
+    if df_performance.empty:
+        return go.Figure()
+
+    df_performance['Hora'] = pd.to_datetime(df_performance['Hora'])
+
+    fig = go.Figure()
     fig.add_trace(go.Scatter(x=df_performance['Hora'], y=df_performance['Net Sent'], mode='lines', name='Net Sent (bytes)'))
     fig.add_trace(go.Scatter(x=df_performance['Hora'], y=df_performance['Net Recv'], mode='lines', name='Net Recv (bytes)'))
 
-    fig.update_layout(title='Desempenho do Sistema', xaxis_title='Hora', yaxis_title='Uso (%)')
+    fig.update_layout(title='Networking do Sistema', xaxis_title='Hora', yaxis_title='Bytes')
 
     return fig
 
@@ -99,11 +144,11 @@ def update_process_dropdown(n_intervals):
     return [{'label': name, 'value': name} for name in process_names]
 
 @app.callback(
-    Output('process-graph', 'figure'),
+    Output('process-cpu-ram', 'figure'),
     [Input('process-name-dropdown', 'value'),
      Input('interval-component', 'n_intervals')]
 )
-def update_process_graph(selected_name, n_intervals):
+def update_process_cpu_ram(selected_name, n_intervals):
     df_process = read_process_data()
 
     if selected_name is None or df_process.empty:
@@ -119,12 +164,60 @@ def update_process_graph(selected_name, n_intervals):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['CPU (%)'], mode='lines', name='CPU (%)'))
     fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Memoria (%)'], mode='lines', name='Memoria (%)'))
+
+    fig.update_layout(title=f'CPU e RAM do Processo: {selected_name}', xaxis_title='Hora', yaxis_title='Uso (%)')
+
+    return fig
+
+@app.callback(
+    Output('process-disk', 'figure'),
+    [Input('process-name-dropdown', 'value'),
+     Input('interval-component', 'n_intervals')]
+)
+def update_process_disk(selected_name, n_intervals):
+    df_process = read_process_data()
+
+    if selected_name is None or df_process.empty:
+        return go.Figure()
+
+    df_process = df_process[df_process['Nome'] == selected_name]
+
+    if df_process.empty:
+        return go.Figure()
+
+    df_process['Hora'] = pd.to_datetime(df_process['Hora'])
+
+    fig = go.Figure()
     fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Disco Lido (bytes)'], mode='lines', name='Disco Lido (bytes)'))
     fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Disco Escrito (bytes)'], mode='lines', name='Disco Escrito (bytes)'))
+
+    fig.update_layout(title=f'Disco do Processo: {selected_name}', xaxis_title='Hora', yaxis_title='Bytes')
+
+    return fig
+
+@app.callback(
+    Output('process-network', 'figure'),
+    [Input('process-name-dropdown', 'value'),
+     Input('interval-component', 'n_intervals')]
+)
+def update_process_network(selected_name, n_intervals):
+    df_process = read_process_data()
+
+    if selected_name is None or df_process.empty:
+        return go.Figure()
+
+    df_process = df_process[df_process['Nome'] == selected_name]
+
+    if df_process.empty:
+        return go.Figure()
+
+    df_process['Hora'] = pd.to_datetime(df_process['Hora'])
+
+    fig = go.Figure()
     fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Rede Enviada (bytes)'], mode='lines', name='Rede Enviada (bytes)'))
     fig.add_trace(go.Scatter(x=df_process['Hora'], y=df_process['Rede Recebida (bytes)'], mode='lines', name='Rede Recebida (bytes)'))
 
-    fig.update_layout(title=f'Dados do Processo: {selected_name}', xaxis_title='Hora', yaxis_title='Uso')
+    fig.update_layout(title=f'Networking do Processo: {selected_name}', xaxis_title='Hora', yaxis_title='Bytes')
 
     return fig
 
