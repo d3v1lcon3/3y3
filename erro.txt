@@ -1,9 +1,45 @@
-Traceback (most recent call last):
-  File /home/fud3/Documents/git/3y3/./dados.py, line 55, in <module>
-    process_list = list_processes()
-                   ^^^^^^^^^^^^^^^^
-  File /home/fud3/Documents/git/3y3/./dados.py, line 16, in list_processes
-    net_counters = proc.net_io_counters()
-                   ^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Process' object has no attribute 'net_io_counters'. Did you mean: 'io_counters'?
+Traceback (most recent call last)
 
+    File /home/fud3/Documents/git/3y3/./dashboard.py, line 107, in update_process_graph
+
+    df_process = read_process_data()
+                 ^^^^^^^^^^^^^^^^^^^
+
+    File /home/fud3/Documents/git/3y3/./dashboard.py, line 28, in read_process_data
+
+    return pd.read_csv(process_file)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File /home/fud3/Documents/git/3y3/python-teste/lib/python3.11/site-packages/pandas/io/parsers/readers.py, line 1026, in read_csv
+
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File /home/fud3/Documents/git/3y3/python-teste/lib/python3.11/site-packages/pandas/io/parsers/readers.py, line 626, in _read
+
+    return parser.read(nrows)
+           ^^^^^^^^^^^^^^^^^^
+
+    File /home/fud3/Documents/git/3y3/python-teste/lib/python3.11/site-packages/pandas/io/parsers/readers.py, line 1923, in read
+
+    ) = self._engine.read(  # type: ignore[attr-defined]
+        
+
+    File /home/fud3/Documents/git/3y3/python-teste/lib/python3.11/site-packages/pandas/io/parsers/c_parser_wrapper.py, line 234, in read
+
+    chunks = self._reader.read_low_memory(nrows)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File parsers.pyx, line 838, in pandas._libs.parsers.TextReader.read_low_memory
+    File parsers.pyx, line 905, in pandas._libs.parsers.TextReader._read_rows
+    File parsers.pyx, line 874, in pandas._libs.parsers.TextReader._tokenize_rows
+    File parsers.pyx, line 891, in pandas._libs.parsers.TextReader._check_tokenize_status
+    File parsers.pyx, line 2061, in pandas._libs.parsers.raise_parser_error
+
+    pandas.errors.ParserError: Error tokenizing data. C error: Expected 10 fields in line 2389, saw 16
+
+This is the Copy/Paste friendly version of the traceback.
+
+Traceback (most recent call last):
+  File /home/fud3/Documents/git/3y3/./dashboard.py, line 107, in update_process_graph
+    df_process = read_pr
