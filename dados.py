@@ -10,14 +10,11 @@ def list_processes():
     for proc in psutil.process_iter(['pid', 'name', 'username', 'cpu_percent', 'memory_percent']):
         try:
             process_info = proc.info
-            # Adiciona a coleta de uso de disco e rede dos processos
+            # Adiciona a coleta de uso de disco dos processos
             with proc.oneshot():
                 io_counters = proc.io_counters()
-                net_counters = proc.net_io_counters()
                 process_info['disk_read_bytes'] = io_counters.read_bytes
                 process_info['disk_write_bytes'] = io_counters.write_bytes
-                process_info['net_bytes_sent'] = net_counters.bytes_sent
-                process_info['net_bytes_recv'] = net_counters.bytes_recv
             processes.append(process_info)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
@@ -67,7 +64,7 @@ if __name__ == "__main__":
             print(f"Rede Enviada: {net_sent} bytes")
             print(f"Rede Recebida: {net_recv} bytes")
             for process in process_list:
-                print(f"Hora: {process['Hora']}, PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}%, Memoria: {process['memory_percent']}%, Disco Lido: {process['disk_read_bytes']} bytes, Disco Escrito: {process['disk_write_bytes']} bytes, Rede Enviada: {process['net_bytes_sent']} bytes, Rede Recebida: {process['net_bytes_recv']} bytes")
+                print(f"Hora: {process['Hora']}, PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}%, Memoria: {process['memory_percent']}%, Disco Lido: {process['disk_read_bytes']} bytes, Disco Escrito: {process['disk_write_bytes']} bytes")
             
             time.sleep(5)
     except KeyboardInterrupt:
