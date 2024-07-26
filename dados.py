@@ -10,6 +10,14 @@ def list_processes():
     for proc in psutil.process_iter(['pid', 'name', 'username', 'cpu_percent', 'memory_percent']):
         try:
             process_info = proc.info
+            # Adiciona a coleta de uso de disco e rede dos processos
+            with proc.oneshot():
+                io_counters = proc.io_counters()
+                net_counters = proc.net_io_counters()
+                process_info['disk_read_bytes'] = io_counters.read_bytes
+                process_info['disk_write_bytes'] = io_counters.write_bytes
+                process_info['net_bytes_sent'] = net_counters.bytes_sent
+                process_info['net_bytes_recv'] = net_counters.bytes_recv
             processes.append(process_info)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
@@ -21,7 +29,10 @@ def get_system_usage():
     ram_usage = memory_info.percent
     disk_usage = psutil.disk_usage('/')
     disk_percent = disk_usage.percent
-    return cpu_usage, ram_usage, disk_percent
+    net_io = psutil.net_io_counters()
+    net_sent = net_io.bytes_sent
+    net_recv = net_io.bytes_recv
+    return cpu_usage, ram_usage, disk_percent, net_sent, net_recv
 
 if __name__ == "__main__":
     # Abrir os arquivos CSV
@@ -33,10 +44,10 @@ if __name__ == "__main__":
             current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
             # Obter uso do sistema
-            cpu, ram, disk = get_system_usage()
+            cpu, ram, disk, net_sent, net_recv = get_system_usage()
             
             # Registrar uso do sistema no CSV com a hora atual
-            relatorio.write_performance(current_time, cpu, ram, disk)
+            relatorio.write_performance(current_time, cpu, ram, disk, net_sent, net_recv)
             # Forçar gravação no disco
             relatorio.file_performance.flush()
             
@@ -53,8 +64,10 @@ if __name__ == "__main__":
             print(f"Uso da CPU: {cpu}%")
             print(f"Uso da RAM: {ram}%")
             print(f"Uso do Disco: {disk}%")
+            print(f"Rede Enviada: {net_sent} bytes")
+            print(f"Rede Recebida: {net_recv} bytes")
             for process in process_list:
-                print(f"Hora: {process['Hora']}, PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}%, Memoria: {process['memory_percent']}%")
+                print(f"Hora: {process['Hora']}, PID: {process['pid']}, Nome: {process['name']}, Usuario: {process['username']}, CPU: {process['cpu_percent']}%, Memoria: {process['memory_percent']}%, Disco Lido: {process['disk_read_bytes']} bytes, Disco Escrito: {process['disk_write_bytes']} bytes, Rede Enviada: {process['net_bytes_sent']} bytes, Rede Recebida: {process['net_bytes_recv']} bytes")
             
             time.sleep(5)
     except KeyboardInterrupt:
