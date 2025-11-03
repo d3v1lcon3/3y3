@@ -1,0 +1,326 @@
+2025-07-16 02:01:07,646:INFO:root:Reload command received, reloading settings from file.
+2025-07-16 02:04:27,817:INFO:root:Reload command received, reloading settings from file.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 161, in main
+    self._setup_zmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 108, in _setup_zmq
+    self.socket.bind("tcp://{}:{}".format(self.settings["host"], self.settings["port"]))
+  File "/usr/local/lib/python3.9/dist-packages/zmq/sugar/socket.py", line 302, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/socket.pyx", line 564, in zmq.backend.cython.socket.Socket.bind
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://127.0.0.1:50000')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+OSError: [Errno 113] No route to host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 113 connecting to 192.168.24.100:6379. No route to host.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 161, in main
+    self._setup_zmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 108, in _setup_zmq
+    self.socket.bind("tcp://{}:{}".format(self.settings["host"], self.settings["port"]))
+  File "/usr/local/lib/python3.9/dist-packages/zmq/sugar/socket.py", line 302, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/socket.pyx", line 564, in zmq.backend.cython.socket.Socket.bind
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://127.0.0.1:50000')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 111 connecting to 192.168.24.100:6379. Connection refused.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 161, in main
+    self._setup_zmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 108, in _setup_zmq
+    self.socket.bind("tcp://{}:{}".format(self.settings["host"], self.settings["port"]))
+  File "/usr/local/lib/python3.9/dist-packages/zmq/sugar/socket.py", line 302, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/socket.pyx", line 564, in zmq.backend.cython.socket.Socket.bind
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://127.0.0.1:50000')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+OSError: [Errno 113] No route to host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 113 connecting to 192.168.24.100:6379. No route to host.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 212, in <module>
+    mzq = MispZmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 70, in __init__
+    raise Exception("mispzmq already running on PID {}".format(pid))
+Exception: mispzmq already running on PID 244
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+OSError: [Errno 113] No route to host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 113 connecting to 192.168.24.100:6379. No route to host.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 161, in main
+    self._setup_zmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 108, in _setup_zmq
+    self.socket.bind("tcp://{}:{}".format(self.settings["host"], self.settings["port"]))
+  File "/usr/local/lib/python3.9/dist-packages/zmq/sugar/socket.py", line 302, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/socket.pyx", line 564, in zmq.backend.cython.socket.Socket.bind
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://127.0.0.1:50000')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+OSError: [Errno 113] No route to host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 113 connecting to 192.168.24.100:6379. No route to host.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 161, in main
+    self._setup_zmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 108, in _setup_zmq
+    self.socket.bind("tcp://{}:{}".format(self.settings["host"], self.settings["port"]))
+  File "/usr/local/lib/python3.9/dist-packages/zmq/sugar/socket.py", line 302, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/socket.pyx", line 564, in zmq.backend.cython.socket.Socket.bind
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://127.0.0.1:50000')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+OSError: [Errno 113] No route to host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 113 connecting to 192.168.24.100:6379. No route to host.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 161, in main
+    self._setup_zmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 108, in _setup_zmq
+    self.socket.bind("tcp://{}:{}".format(self.settings["host"], self.settings["port"]))
+  File "/usr/local/lib/python3.9/dist-packages/zmq/sugar/socket.py", line 302, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/socket.pyx", line 564, in zmq.backend.cython.socket.Socket.bind
+  File "zmq/backend/cython/checkrc.pxd", line 28, in zmq.backend.cython.checkrc._check_rc
+zmq.error.ZMQError: Address already in use (addr='tcp://127.0.0.1:50000')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+OSError: [Errno 113] No route to host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 113 connecting to 192.168.24.100:6379. No route to host.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 212, in <module>
+    mzq = MispZmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 73, in __init__
+    self.pidfile.unlink()
+  File "/usr/lib/python3.9/pathlib.py", line 1343, in unlink
+    self._accessor.unlink(self)
+FileNotFoundError: [Errno 2] No such file or directory: '/var/www/MISP/app/files/scripts/tmp/mispzmq.pid'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 264, in connect
+    sock = self.retry.call_with_retry(
+  File "/usr/local/lib/python3.9/dist-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 265, in <lambda>
+    lambda: self._connect(), lambda error: self.disconnect(error)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 627, in _connect
+    raise err
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 615, in _connect
+    sock.connect(socket_address)
+OSError: [Errno 113] No route to host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 214, in <module>
+    mzq.main()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 182, in main
+    data = self.r.blpop(lists, timeout=10)
+  File "/usr/local/lib/python3.9/dist-packages/redis/commands/core.py", line 2594, in blpop
+    return self.execute_command("BLPOP", *keys)
+  File "/usr/local/lib/python3.9/dist-packages/redis/client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 1086, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.9/dist-packages/redis/connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 113 connecting to 192.168.24.100:6379. No route to host.
+Traceback (most recent call last):
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 212, in <module>
+    mzq = MispZmq()
+  File "/var/www/MISP/app/files/scripts/mispzmq/mispzmq.py", line 70, in __init__
+    raise Exception("mispzmq already running on PID {}".format(pid))
+Exception: mispzmq already running on PID 229

@@ -1,0 +1,146 @@
+version: '3.7'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: elasticsearch
+    hostname: elasticsearch
+    restart: unless-stopped
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=hive
+      - http.host=0.0.0.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://192.168.24.101:9200"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.1.0
+    container_name: logstash
+    hostname: logstash
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5044:5044/tcp"
+      - "12201:12201/udp"
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://192.168.24.101:9600"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.1.0
+    container_name: kibana
+    hostname: kibana
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://192.168.24.101:9200  # IP fixo do Elasticsearch (local)
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://192.168.24.101:5601/api/status"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  cassandra:
+    image: 'cassandra:3.11'
+    container_name: cassandra
+    hostname: cassandra
+    restart: unless-stopped
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TheHive
+      - CASSANDRA_DC=DC1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    volumes:
+      - cassandradata:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  misp_mysql:
+    image: mysql/mysql-server:8.0
+    container_name: misp_mysql
+    hostname: misp_mysql
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - mispsqldata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+  misp:
+    image: coolacid/misp-docker:core-latest
+    container_name: misp
+    hostname: misp
+    restart: unless-stopped
+    env_file:
+      - .env
+#    user: "0:33" # <--- ADICIONE ESTA LINHA
+    ports:
+      - "8080:80"
+      - "8443:443"
+    environment:
+      - MYSQL_HOST=misp_mysql  # IP fixo do misp_mysql (local)
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MISP_ADMIN_EMAIL=${MISP_ADMIN_EMAIL}
+      - MISP_ADMIN_PASSPHRASE=${MISP_ADMIN_PASSPHRASE}
+      - MISP_BASEURL=localhost
+      - TIMEZONE=America/Sao_Paulo
+      - INIT=true
+      - CRON_USER_ID=1
+      - REDIS_FQDN=192.168.24.100  # IP fixo do Redis (Parte 1)
+      - HOSTNAME=https://192.168.24.101:8443
+    volumes:
+      - ./server-configs/:/var/www/MISP/app/Config/
+      - ./logs/:/var/www/MISP/app/tmp/logs/
+      - ./files/:/var/www/MISP/app/files
+      - ./ssl/:/etc/nginx/certs
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://192.168.24.101:12201"  # IP fixo do Logstash (local)
+
+  misp-modules:
+    image: coolacid/misp-docker:modules-latest
+    container_name: misp-module
+    hostname: misp-module
+    environment:
+      - "REDIS_BACKEND===192.168.24.100=="  # IP fixo do Redis (Parte 1) - Servidor 01
+    depends_on:
+      - misp_mysql
+
+volumes:
+  cassandradata:
+  elasticsearch-data:
+  mispsqldata:

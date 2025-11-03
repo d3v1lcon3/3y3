@@ -1,0 +1,6 @@
+Error: read error on connection to 192.168.24.100:6379
+#0 /var/www/MISP/app/Vendor/kamisama/php-resque-ex-scheduler/lib/ResqueScheduler/ResqueScheduler.php(248): Redis->zRangeByScore()
+#1 /var/www/MISP/app/Vendor/kamisama/php-resque-ex-scheduler/lib/ResqueScheduler/Worker.php(61): ResqueScheduler\ResqueScheduler::nextDelayedTimestamp()
+#2 /var/www/MISP/app/Vendor/kamisama/php-resque-ex-scheduler/lib/ResqueScheduler/Worker.php(44): ResqueScheduler\Worker->handleDelayedItems()
+#3 /var/www/MISP/app/Vendor/kamisama/php-resque-ex-scheduler/bin/resque-scheduler.php(68): ResqueScheduler\Worker->work()
+#4 {main}

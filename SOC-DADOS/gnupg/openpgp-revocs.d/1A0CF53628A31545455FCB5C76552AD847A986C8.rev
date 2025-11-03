@@ -1,0 +1,35 @@
+This is a revocation certificate for the OpenPGP key:
+
+pub   rsa3072 2025-03-02 [SCEA]
+      1A0CF53628A31545455FCB5C76552AD847A986C8
+uid          MISP Admin <admin@admin.test>
+
+A revocation certificate is a kind of "kill switch" to publicly
+declare that a key shall not anymore be used.  It is not possible
+to retract such a revocation certificate once it has been published.
+
+Use it to revoke this key in case of a compromise or loss of
+the secret key.  However, if the secret key is still accessible,
+it is better to generate a new revocation certificate and give
+a reason for the revocation.  For details see the description of
+of the gpg command "--generate-revocation" in the GnuPG manual.
+
+To avoid an accidental use of this file, a colon has been inserted
+before the 5 dashes below.  Remove this colon with a text editor
+before importing and publishing this revocation certificate.
+
+:-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: This is a revocation certificate
+
+iQG2BCABCgAgFiEEGgz1NiijFUVFX8tcdlUq2EephsgFAmfEnkcCHQAACgkQdlUq
+2EephsiI4wv+Oa5wua2NfqcVh0a8+2B5TFVxC70iXtH7jypaBsbS/ltzxY5yQl/K
+E1wGbTcMcfqRauZ/qAmifhXpnH2qJhkUmYFrc0VBEWn4z4vNWwU4cqCpk26o5FTp
+Rxqiz7Rq9Xq37MMgF18LGPuJDMalaa02itXW9ca5ug7htSJ0d+ZntFUqdpmxLkBh
+qeL2a3/ePfm5FqdO7yBebmbQTuduF9AKCoIYeR61S+DA+KAAbx0TfKRz4qmYtES+
+GK75UCgTO2kCiQmpLfMha++syu82PNvhhaN1R8A/xBUNVdq+Y7aX5JShZtlBeL3j
+D5ZdJD4Z++2venT4NEYLj7U9J45ySvo4gTtQWflS0aVrxhPBoz7xiddwKq4bZAzA
+e3TE7O+vWct93lLE4VyexpGx4z7qnCdq9Fo0H0LNy0ezHiZ30N4fl9qJqU0RD8z0
+uG8xLRb+Jg007F1hXDRC0Hnt5lkvlN6pBLXhuljTbLigXdlM3Ed45Myu4LKlOzAF
+g3eaSMbecuuQ
+=uspp
+-----END PGP PUBLIC KEY BLOCK-----
