@@ -1,0 +1,12 @@
+# filebeat.yml
+
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/ossec/logs/alerts/alerts.json
+  json.keys_under_root: true
+  json.overwrite_keys: true
+
+output.logstash:
+  hosts: ["192.168.24.101:5044"] # IP do seu servidor SOC2 e porta do Logstash

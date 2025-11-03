@@ -1,0 +1,105 @@
+version: '3.7'
+services:
+  wazuh-manager:
+    image: wazuh/wazuh-manager:4.5.2
+    container_name: wazuh-manager
+    hostname: wazuh-manager
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "1514:1514/udp"
+      - "1515:1515"
+      - "514:514/udp"
+      - "55000:55000"
+    environment:
+      - TZ=UTC
+    volumes:
+#      - ./wazuh/ossec.conf:/var/ossec/etc:ro
+      - wazuh_logs:/var/ossec/logs
+      - wazuh-data:/var/ossec/data
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://192.168.24.103:12201"  # IP fixo do Logstash (Parte 2) - Servidor 2 .
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.1.0 # Use a mesma versão da sua pilha ELK!
+    container_name: filebeat
+    user: root # Necessário para acessar os logs de outros contêineres
+    volumes:
+     # Monta o arquivo de configuração do Filebeat
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      # Monta o diretório de logs do Wazuh para que o Filebeat possa lê-lo
+      - wazuh_logs:/var/ossec/logs:ro
+
+  thehive:
+    image: strangebee/thehive:5.2
+    container_name: thehive
+    hostname: thehive
+    restart: unless-stopped
+    env_file:
+      - .env
+    mem_limit: 4g
+    ports:
+      - "9000:9000"
+    environment:
+      - JVM_OPTS="-Xms1024M -Xmx1024M"
+      - THP_JANUSGRAPH_STORAGE_COMPRESSION_ENABLED=false
+    command:
+       - --config-file
+       - /etc/thehive/application.conf
+    volumes:
+      - thehivedata:/etc/thehive
+      - ./thehive-conf/application.conf:/etc/thehive/application.conf:ro
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://192.168.24.103:12201"  # IP fixo do Logstash (Parte 2) - Servidor 2 
+
+  cortex:
+    image: thehiveproject/cortex:3.1.0-1
+    container_name: cortex
+    hostname: cortex
+    restart: always
+#    env_file:
+#      - .env
+    ports:
+      - "9001:9001"
+    environment:
+      - CORTEX_JAVA_OPTS=-Dconfig.file=/etc/cortex/application.conf
+#     - ELASTICSEARCH_HOST=192.168.24.101
+#     - ELASTICSEARCH_PORT=9200
+      - job_directory=/tmp/cortex-jobs
+      - docker_job_directory=/tmp/cortex-jobs
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./cortex/application.conf:/etc/cortex/application.conf
+      - ./cortex-logs:/opt/cortex/logs
+      - ./cortex-jobs:/tmp/cortex-jobs
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://192.168.24.103:12201"  # IP fixo do Logstash (Parte 2) - Servidor 2 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://192.168.24.102:9001"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+   image: redis:7.0.12
+   container_name: redis
+   hostname: redis
+   ports:
+     - "6379:6379"
+   command: redis-server --bind 0.0.0.0
+   volumes:
+     - redis-data:/data
+
+volumes:
+  wazuh-data:
+  thehivedata:
+  redis-data:
+  wazuh_logs:
+
