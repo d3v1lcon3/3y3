@@ -14,6 +14,7 @@ services:
       - "55000:55000"
     environment:
       - TZ=UTC
+      - WAZUH_MANAGER=192.168.15.100
     volumes:
 #      - ./wazuh/ossec.conf:/var/ossec/etc:ro
       - wazuh_logs:/var/ossec/logs
